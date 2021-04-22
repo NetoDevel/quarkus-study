@@ -14,6 +14,10 @@ public class PersonService {
     @Inject
     private PersonRepository personRepository;
 
+    public PersonService(PersonRepository repository) {
+        this.personRepository = repository;
+    }
+
     public List<Person> listAll() {
         return personRepository.findOrderByName();
     }
@@ -23,4 +27,5 @@ public class PersonService {
         personRepository.persist(person);
         return personRepository.findById(person.id);
     }
+
 }

@@ -29,11 +29,25 @@ class PersonResourceTest {
 
     @Test
     @DisplayName("should return all users ordering by name")
-    public void shouldReturnUsers() {
+    public void shouldReturnPersons() {
         RestAssured.given()
                 .get("/persons").then()
                 .body("[0].name", equalTo("jose"))
                 .body("[1].name", equalTo("netodevel"));
+    }
+
+    @Test
+    @DisplayName("should save a person")
+    public void shouldSavePerson() {
+        String body = "{\n" +
+                "    \"name\": \"Jose Neto\",\n" +
+                "    \"birth\": \"1990-01-01\"\n" +
+                "}";
+
+        RestAssured.given().body(body)
+                .contentType("application/json").post("/persons").then()
+                .body("name", equalTo("Jose Neto"))
+                .body("birth", equalTo("1990-01-01"));
     }
 
     @AfterEach
