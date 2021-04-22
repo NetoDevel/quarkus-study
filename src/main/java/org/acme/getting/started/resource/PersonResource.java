@@ -10,7 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 import static javax.ws.rs.core.Response.ok;
 
@@ -22,12 +21,6 @@ public class PersonResource {
     private PersonService personService;
 
     @GET
-    public List<Person> listAll() {
-        return personService.listAll();
-    }
-
-    @GET
-    @Path(value = "/v2")
     public Response findAll() {
         return ok(personService.listAll()).build();
     }
