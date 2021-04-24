@@ -16,13 +16,15 @@ import static org.hamcrest.Matchers.equalTo;
 @Transactional
 class PersonResourceTest {
 
+    Person person;
+
     @BeforeEach
     public void setUp() {
-        Person person = new Person();
+        person = new Person();
         person.name = "netodevel";
         person.persist();
 
-        Person personTwo = new Person();
+        var personTwo = new Person();
         personTwo.name = "jose";
         personTwo.persist();
     }
@@ -50,8 +52,36 @@ class PersonResourceTest {
                 .body("birth", equalTo("1990-01-01"));
     }
 
+    @Test
+    @DisplayName("give a invalid person should return bad request")
+    public void shouldReturnBadRequest() {
+        var invalidPersonBody = "{\n" +
+                "    \"birth\": \"1990-01-01\"\n" +
+                "}";
+
+        RestAssured.given().body(invalidPersonBody)
+                .contentType("application/json").post("/persons")
+                .then().statusCode(400);
+    }
+
+    @Test
+    @DisplayName("give a person id should return data of person")
+    public void shouldReturnDataByPersonId() {
+        RestAssured.given()
+                .get("/persons/" + person.id).then()
+                .body("name", equalTo("netodevel"));
+    }
+
+    @Test
+    @DisplayName("give a invalid person_id should return no_content")
+    public void shouldReturnNoContent() {
+        RestAssured.given()
+                .get("/persons/123123").then().statusCode(204);
+    }
+
     @AfterEach
     public void tearDown() {
         Person.deleteAll();
     }
+
 }

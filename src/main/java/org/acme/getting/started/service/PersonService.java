@@ -1,21 +1,27 @@
 package org.acme.getting.started.service;
 
 import org.acme.getting.started.entity.Person;
+import org.acme.getting.started.exceptions.AppException;
 import org.acme.getting.started.repository.PersonRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class PersonService {
 
-    @Inject
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
+    private final Validator validator;
 
-    public PersonService(PersonRepository repository) {
+    @Inject
+    public PersonService(PersonRepository repository, Validator validator) {
         this.personRepository = repository;
+        this.validator = validator;
     }
 
     public List<Person> listAll() {
@@ -24,8 +30,24 @@ public class PersonService {
 
     @Transactional
     public Person create(Person person) {
-        personRepository.persist(person);
-        return personRepository.findById(person.id);
+        var violations = validator.validate(person);
+        if (violations.isEmpty()) {
+            personRepository.persist(person);
+            return personRepository.findById(person.id);
+        }
+
+        String allViolations = violations.stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+        throw new AppException(400, allViolations);
+    }
+
+    public Person findById(Long id) {
+        var person = personRepository.findById(id);
+        if (person == null) {
+            throw new AppException(204, "person_id ".concat(String.valueOf(id)).concat(" not found"));
+        }
+        return person;
     }
 
 }

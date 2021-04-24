@@ -4,10 +4,7 @@ import org.acme.getting.started.entity.Person;
 import org.acme.getting.started.service.PersonService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -29,4 +26,11 @@ public class PersonResource {
     public Response create(Person person) {
         return ok(personService.create(person)).status(201).build();
     }
+
+    @GET
+    @Path(value = "/{id}")
+    public Response findById(@PathParam("id") Long id) {
+        return ok(personService.findById(id)).build();
+    }
+
 }
