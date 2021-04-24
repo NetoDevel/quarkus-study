@@ -3,7 +3,6 @@ package org.acme.getting.started.service;
 import org.acme.getting.started.entity.Person;
 import org.acme.getting.started.exceptions.AppException;
 import org.acme.getting.started.repository.PersonRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,6 @@ import org.mockito.Mockito;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -55,6 +53,20 @@ class PersonServiceTest {
             personService.create(personInvalid);
         });
         assertEquals("name my not be blank", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("give a data person should update a person")
+    public void shouldUpdatedPerson() {
+        var personToUpdate = new Person();
+        personToUpdate.name = "xpto";
+
+        var personFromId = new Person();
+        personFromId.name = "first name";
+        Mockito.when(personRepository.findById(1L)).thenReturn(personFromId);
+
+        personService.updatePerson(1L, personToUpdate);
+        Mockito.verify(personRepository, times(1)).persist(any(Person.class));
     }
 
 }

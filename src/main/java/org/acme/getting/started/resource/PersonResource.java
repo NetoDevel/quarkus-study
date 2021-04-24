@@ -33,4 +33,10 @@ public class PersonResource {
         return ok(personService.findById(id)).build();
     }
 
+    @PUT
+    @Path(value = "/{id}")
+    public Response update(@PathParam("id") Long id, Person person) {
+        return ok(personService.updatePerson(id, person)).build();
+    }
+
 }

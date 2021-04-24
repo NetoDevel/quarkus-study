@@ -50,4 +50,19 @@ public class PersonService {
         return person;
     }
 
+    @Transactional
+    public Person updatePerson(Long id, Person personToUpdate) {
+        var person = this.findById(id);
+
+        if (personToUpdate.name != null && !personToUpdate.name.isBlank()) {
+            person.name = personToUpdate.name;
+        }
+        if (personToUpdate.birth != null) {
+            person.birth = personToUpdate.birth;
+        }
+
+        personRepository.persist(person);
+        return person;
+    }
+
 }

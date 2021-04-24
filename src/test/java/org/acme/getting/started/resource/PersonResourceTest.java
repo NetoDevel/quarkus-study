@@ -79,6 +79,22 @@ class PersonResourceTest {
                 .get("/persons/123123").then().statusCode(204);
     }
 
+    @Test
+    @DisplayName("give a data of person should update data of person")
+    public void shouldUpdatePerson() {
+        var bodyToUpdate = "{\n" +
+                "    \"name\": \"netodevel_updated\",\n" +
+                "    \"birth\": \"1980-01-01\"\n" +
+                "}";
+
+        RestAssured.given()
+                .body(bodyToUpdate)
+                .contentType("application/json")
+                .put("/persons/" + person.id).then()
+                .body("name", equalTo("netodevel_updated"))
+                .body("birth", equalTo("1980-01-01"));
+    }
+
     @AfterEach
     public void tearDown() {
         Person.deleteAll();
