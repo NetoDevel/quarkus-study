@@ -95,6 +95,36 @@ class PersonResourceTest {
                 .body("birth", equalTo("1980-01-01"));
     }
 
+    @Test
+    @DisplayName("given a invalid person_id to update should return no_content")
+    public void shouldReturnNoContentWhenUpdate() {
+        var bodyToUpdate = "{\n" +
+                "    \"name\": \"netodevel_updated\",\n" +
+                "    \"birth\": \"1980-01-01\"\n" +
+                "}";
+
+        RestAssured.given()
+                .body(bodyToUpdate)
+                .contentType("application/json")
+                .put("/persons/123123").then().statusCode(204);
+    }
+
+    @Test
+    @DisplayName("given a valid person_id should return ok")
+    public void shouldDeletePerson() {
+        RestAssured.given()
+                .contentType("application/json")
+                .delete("/persons/" + person.id).then().statusCode(200);
+    }
+
+    @Test
+    @DisplayName("given a invalid person_id should return no_content")
+    public void shouldNotDeletePerson() {
+        RestAssured.given()
+                .contentType("application/json")
+                .delete("/persons/1231").then().statusCode(204);
+    }
+
     @AfterEach
     public void tearDown() {
         Person.deleteAll();

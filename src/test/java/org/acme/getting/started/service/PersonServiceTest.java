@@ -3,6 +3,7 @@ package org.acme.getting.started.service;
 import org.acme.getting.started.entity.Person;
 import org.acme.getting.started.exceptions.AppException;
 import org.acme.getting.started.repository.PersonRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,6 +68,40 @@ class PersonServiceTest {
 
         personService.updatePerson(1L, personToUpdate);
         Mockito.verify(personRepository, times(1)).persist(any(Person.class));
+    }
+
+    @Test
+    @DisplayName("given a invalid id to update should return exception")
+    public void shouldReturnExceptionWhenUpdate() {
+        var personToUpdate = new Person();
+        personToUpdate.name = "xpto";
+
+        var personFromId = new Person();
+        personFromId.name = "first name";
+        Mockito.when(personRepository.findById(1L)).thenReturn(personFromId);
+
+        Assertions.assertThrows(AppException.class, () -> {
+            personService.updatePerson(2L, personToUpdate);
+        });
+    }
+
+    @Test
+    @DisplayName("given a person_id should delete a person")
+    public void shouldDeletePerson() {
+        var personFromId = new Person();
+        personFromId.name = "first name";
+        Mockito.when(personRepository.findById(1L)).thenReturn(personFromId);
+
+        personService.deletePerson(1L);
+        Mockito.verify(personRepository, times(1)).deleteById(eq(1L));
+    }
+
+    @Test
+    @DisplayName("given a person_id invalid should return excpetion")
+    public void notShouldDeletePerson() {
+        Assertions.assertThrows(AppException.class, () -> {
+            personService.deletePerson(101010L);
+        });
     }
 
 }

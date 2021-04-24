@@ -65,4 +65,11 @@ public class PersonService {
         return person;
     }
 
+    @Transactional
+    public String deletePerson(long id) {
+        this.findById(id);
+        personRepository.deleteById(id);
+        return "deleted";
+    }
+
 }

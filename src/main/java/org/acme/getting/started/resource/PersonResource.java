@@ -39,4 +39,9 @@ public class PersonResource {
         return ok(personService.updatePerson(id, person)).build();
     }
 
+    @DELETE
+    @Path(value = "/{id}")
+    public Response delete(@PathParam("id") Long id) {
+        return ok(personService.deletePerson(id)).build();
+    }
 }
