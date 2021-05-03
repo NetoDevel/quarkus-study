@@ -10,7 +10,7 @@ This project contains:
 
 ## Running the application in dev mode
 
-Start database (POSTGRESQL)
+Postgresql
 ```shell script
 docker-compose up -d
 ```
