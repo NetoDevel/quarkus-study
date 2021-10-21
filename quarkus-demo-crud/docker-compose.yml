@@ -1,5 +1,13 @@
 version: "3"
 services:
+  app:
+    image: quarkus-demo-native
+    links:
+      - postgres
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
   postgres:
     image: postgres
     restart: always
@@ -9,4 +17,3 @@ services:
       POSTGRES_DB: demo_quarkus
     ports:
       - 5432:5433
-    network_mode: host
